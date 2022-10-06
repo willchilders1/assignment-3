@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title></title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.2/dist/leaflet.css"
+      integrity="sha256-sA+zWATbFveLLNqWO2gtiw3HL/lh1giY/Inf1BJ0z14="
+      crossorigin=""
+    />
+    <style>
+      #map {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script
+      src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js"
+      integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg="
+      crossorigin=""
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-fetch@3"></script>
+    <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
+    <script>
+      var map = L.map("map").setView([42.35854391749705, -71.455078125], 9);
+      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution:
+          '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      }).addTo(map);
+      Promise.all([fetch("ky-point.geojson"), fetch("ky-to-ma.geojson")])
+        .then(function (responses) {
+          // Get a JSON object from each of the responses
+          return Promise.all(
+            responses.map(function (response) {
+              return response.json();
+            })
+          );
+        })
+        .then(function (data) {
+          // Log the data to the console
+          // You would do something with both sets of data here
+          plotData(data);
+        })
+        .catch(function (error) {
+          // if there's an error, log it
+          console.log(error);
+        });
+
+      function plotData(data) {
+        console.log(data[0]);
+        L.map(data).addTo(map);
+      }
+      //   const lineSource = d3.json("ky-to-ma.geojson");
+      //   const pointSource = d3.json("ky-point.geojson");
+
+      //   var line = turf.lineString;
+    </script>
+  </body>
+</html>
