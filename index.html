@@ -39,7 +39,7 @@
         attribution:
           '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
       }).addTo(map);
-      Promise.all([fetch("ky-point.geojson"), fetch("ky-to-ma.geojson")])
+      Promise.all([fetch("point1.geojson"), fetch("point2.geojson"), fetch("ky-to-ma.geojson")])
         .then(function (responses) {
           // Get a JSON object from each of the responses
           return Promise.all(
@@ -59,13 +59,29 @@
         });
 
       function plotData(data) {
-        console.log(data[0]);
-        L.map(data).addTo(map);
-      }
-      //   const lineSource = d3.json("ky-to-ma.geojson");
-      //   const pointSource = d3.json("ky-point.geojson");
 
-      //   var line = turf.lineString;
+        const point1Data = data [0];
+        const point2Data = data[1];
+        const lineData = data[2];
+        L.geoJSON(point1Data).addTo(map);
+        L.geoJSON(point2Data).addTo(map);
+        L.geoJSON(lineData).addTo(map);
+
+        findClosest (point1Data, lineData);
+        findMidpoint (point1Data, point2Data)
+        // var midpoint = turf.midpoint(point1Data.features[0].geometry, point2Data.features[0].geometry);
+      }
+function findClosest(point1Data, lineData){
+    console.log(point1Data);
+    console.log(lineData);
+    var snapped = turf.midpoint(lineData, point1Data.features[0].geometry, {units:'miles'});
+    L.geoJSON(snapped).addTo(map);
+}
+function findMidpoint (point1Data, point2Data){
+    var midpoint = turf.midpoint(point1Data.features[0].geometry, point2Data.features[0].geometry);
+    L.geoJSON(midpoint).addTo(map);
+
+}
     </script>
   </body>
 </html>
